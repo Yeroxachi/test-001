@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Форма для создания пользователей</title>
+    <style>
+        body {
+            margin-top: 15%;
+            margin-left: 35%;
+            background-color: #007DFF; 
+        }
+
+        .form-container {
+            background-color: rgba(0, 255, 0, 0.6);
+            padding: 20px;
+            position: relative;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .form-container label,
+        .form-container select {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-container button {
+            background-color: #0040A1;
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header id="NavBar">
+        <button class="ChangePage">Создать пользователя</button>
+        <button class="ChangePage">Список всех пользоваетей</button>
+    </header>
+    <div class="form-container">
+        <h1>Создать профиль</h1>
+        <form id="profile-form">
+            <label for="first-name">Имя:</label>
+            <input type="text" id="first-name" name="first-name" required>
+        
+            <label for="last-name">Фамилия:</label>
+            <input type="text" id="last-name" name="last-name" required>
+            
+            <label for="type">Тип:</label>
+            <select id="type" name="type" required>
+                <option value="admin">Админ</option>
+                <option value="teacher">Учитель</option>
+                <option value="student">Студент</option>
+            </select>
+        
+            <button type="submit">Создать</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('profile-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const type = document.getElementById('type').value;
+
+            const data = {
+                name: firstName,
+                surname: lastName,
+                userTypeId: 2
+            };
+
+            fetch('http://localhost:5216/api/User', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.status === 201) {
+                    return response.json();
+                } else {
+                    throw new Error('Ошибка при создании профиля');
+                }
+            })
+            .then(data => {
+                console.log('Успешно');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+    </script>
+</body>
+</html>
