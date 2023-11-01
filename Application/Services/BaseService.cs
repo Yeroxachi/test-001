@@ -15,6 +15,11 @@ public abstract class BaseService
         DbTestContext = dbTestContext;
         Mapper = mapper;
     }
+    
+    protected BaseResponse Ok()
+    {
+        return new BaseResponse();
+    }
 
     protected BaseResponse<TE> Ok<TE>(TE data) where TE : class
     {

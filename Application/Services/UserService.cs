@@ -29,9 +29,16 @@ public class UserService : BaseService, IUserService
         return Created(response);
     }
 
-    public Task<BaseResponse> GetUserByIdAsync(Guid userId)
+    public async Task<BaseResponse> GetUserByIdAsync(Guid userId)
     {
-        throw new NotImplementedException();
+        var user = await DbTestContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var response = Mapper.Map<UserResponse>(user);
+        return Ok(response);
     }
 
     public async Task<BaseResponse> GetAllUsersAsync()
@@ -42,8 +49,16 @@ public class UserService : BaseService, IUserService
         return Ok(response);
     }
 
-    public Task<BaseResponse> DeleteUserAsync(Guid userId)
+    public async Task<BaseResponse> DeleteUserAsync(Guid userId)
     {
-        throw new NotImplementedException();
+        var user = await DbTestContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        DbTestContext.Users.Remove(user);
+        await DbTestContext.SaveChangesAsync();
+        return Ok();
     }
 }

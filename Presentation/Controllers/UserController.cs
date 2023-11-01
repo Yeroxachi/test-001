@@ -27,4 +27,11 @@ public class UserController : BaseController
         var response = await _userService.GetAllUsersAsync();
         return HandleRequest(response);
     }
+    
+    [HttpGet("GetUserById")]
+    public async Task<ActionResult<BaseResponse<UserResponse>>> GetUserByIdAsync([FromQuery] Guid userId)
+    {
+        var response = await _userService.GetUserByIdAsync(userId);
+        return HandleRequest(response);
+    }
 }
