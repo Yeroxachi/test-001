@@ -14,10 +14,17 @@ public class UserController : BaseController
         _userService = userService;
     }
 
-    [HttpPost]
+    [HttpPost("CreateUser")]
     public async Task<ActionResult<BaseResponse<UserResponse>>> CreateUserAsync([FromBody] UserCreateDto dto)
     {
         var response = await _userService.CreateUserAsync(dto);
+        return HandleRequest(response);
+    }
+    
+    [HttpGet("GetAllUsers")]
+    public async Task<ActionResult<BaseResponse<List<UserResponse>>>> GetAllUserAsync()
+    {
+        var response = await _userService.GetAllUsersAsync();
         return HandleRequest(response);
     }
 }

@@ -40,8 +40,8 @@
 </head>
 <body>
     <header id="NavBar">
-        <button class="ChangePage">Создать пользователя</button>
-        <button class="ChangePage">Список всех пользоваетей</button>
+        <button id="ThisPage" class="ChangePage">Создать пользователя</button>
+        <button id="GetAll" class="ChangePage">Список всех пользоваетей</button>
     </header>
     <div class="form-container">
         <h1>Создать профиль</h1>
@@ -75,7 +75,7 @@
                 userTypeId: 2
             };
 
-            fetch('http://localhost:5216/api/User', {
+            fetch('http://localhost:5216/api/User/CreateUser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,6 +95,12 @@
             .catch(error => {
                 console.error(error);
             });
+        });
+        document.getElementById("ThisPage").addEventListener("click", function() {
+            location.href = "#";
+        });
+        document.getElementById("GetAll").addEventListener("click", function() {
+            location.href = "Users.html";
         });
     </script>
 </body>

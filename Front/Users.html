@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список пользователей</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            background-color: aquamarine;
+        }
+
+        h1, h2, p{
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .container {
+            padding: 20%;
+            padding: 15%;
+            width: 500px;
+            margin: 0 auto;
+        }
+
+        .users {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            max-width: 500px;
+            margin: 0 auto;
+            overflow-y: scroll;
+            background-color: #fff;
+        }
+
+        .user {
+            width: 200px;
+            height: 70px;
+            background-color: #6042b9;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            display: none;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            width: 100px;
+            height: 40px;
+            background-color: #42b983;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+    <header id="NavBar">
+        <button id="CreateUser" class="ChangePage">Создать пользователя</button>
+        <button id="ThisPage" class="ChangePage">Список всех пользоваетей</button>
+    </header>
+    <div class="container">
+        <h1>Список пользователей</h1>
+        <div class="users">
+        </div>
+        <div class="buttons">
+        <button id="clear">Очистить</button>
+        <button id="load">Загрузить</button>
+        </div>
+    </div>
+
+    <script>
+        const users = document.querySelector(".users");
+        const buttons = document.querySelector(".buttons");
+
+        function clearUsers() {
+        users.innerHTML = "";
+        }
+        function loadUsers() {
+        fetch("http://localhost:5216/api/User/GetAllUsers")
+            .then((response) => response.json())
+            .then((data) => {
+            for (const user of data.data) {
+                const userBlock = document.createElement("div");
+                userBlock.classList.add("user");
+                userBlock.innerHTML = `
+                <h2>${user.name}</h2>
+                <p>${user.surname}</p>
+                <p>${user.userTypeId === 0 ? "Админ" : user.userTypeId === 1 ? "Преподаватель" : "Студент"}</p>
+                `;
+                users.appendChild(userBlock);
+                userBlock.style.display = "block";
+            }
+            });
+        }
+
+        buttons.querySelector("#clear").addEventListener("click", clearUsers);
+        buttons.querySelector("#load").addEventListener("click", function() {
+        clearUsers();
+        loadUsers();
+        });
+        document.getElementById("ThisPage").addEventListener("click", function() {
+            location.href = "#";
+        });
+        document.getElementById("CreateUser").addEventListener("click", function() {
+            location.href = "CreateUser.html";
+        });
+    </script>
+    </body>
+</html>

@@ -34,9 +34,12 @@ public class UserService : BaseService, IUserService
         throw new NotImplementedException();
     }
 
-    public Task<BaseResponse> GetAllUsersAsync()
+    public async Task<BaseResponse> GetAllUsersAsync()
     {
-        throw new NotImplementedException();
+        var users = await DbTestContext.Users.ToListAsync();
+        var response = Mapper.Map<List<UserResponse>>(users);
+
+        return Ok(response);
     }
 
     public Task<BaseResponse> DeleteUserAsync(Guid userId)
