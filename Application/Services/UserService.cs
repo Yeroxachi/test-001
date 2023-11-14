@@ -1,4 +1,5 @@
 ﻿using Application.DTO_s;
+using Application.Helpers;
 using Application.Interfaces;
 using Application.Responses;
 using AutoMapper;
@@ -14,17 +15,18 @@ public class UserService : BaseService, IUserService
     {
     }
     
-    public async Task<BaseResponse> CreateUserAsync(UserCreateDto dto)
+    public async Task<BaseResponse> CreateUserAsync(UserCreateDto dto, CancellationToken cancellationToken = default)
     {
-        var user = await DbTestContext.Users.FirstOrDefaultAsync(x => x.Name == dto.Name && x.Surname == dto.Surname);
+        var user = await DbTestContext.Users.FirstOrDefaultAsync(x => x.Name == dto.Name && x.Surname == dto.Surname, cancellationToken: cancellationToken);
         if (user is not null)
         {
             return BadRequest("User Already Exist in System");
         }
 
         var newUser = Mapper.Map<User>(dto);
-        await DbTestContext.Users.AddAsync(newUser);
-        await DbTestContext.SaveChangesAsync();
+        newUser.PasswordHash = UserHelpers.Hash(newUser.PasswordHash);
+        await DbTestContext.Users.AddAsync(newUser, cancellationToken);
+        await DbTestContext.SaveChangesAsync(cancellationToken);
         var response = Mapper.Map<UserResponse>(newUser);
         return Created(response);
     }

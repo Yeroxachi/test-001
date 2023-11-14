@@ -34,4 +34,11 @@ public class UserController : BaseController
         var response = await _userService.GetUserByIdAsync(userId);
         return HandleRequest(response);
     }
+
+    [HttpDelete]
+    public async Task<ActionResult<BaseResponse<UserResponse>>> DeleteUserAsync(Guid userId)
+    {
+        var response = await _userService.DeleteUserAsync(userId);
+        return HandleRequest(response);
+    }
 }
