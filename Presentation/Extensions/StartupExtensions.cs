@@ -13,6 +13,8 @@ public static class StartupExtensions
     public static IServiceCollection AddManagementServices(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IUserService, UserService>();
+        serviceCollection.AddScoped<IAuthService, AuthService>();
+        serviceCollection.AddScoped<ITokenProvider, TokenProvider>();
         return serviceCollection;
     }
     

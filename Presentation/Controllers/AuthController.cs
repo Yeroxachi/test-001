@@ -13,7 +13,8 @@ public class AuthController : BaseController
     {
         _authService = authService;
     }
-
+    
+    [HttpPost]
     public async Task<ActionResult<BaseResponse<TokenResponse>>> LoginAsync(LoginDto dto)
     {
         var response = await _authService.LoginAsync(dto);

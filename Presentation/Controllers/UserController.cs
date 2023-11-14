@@ -1,6 +1,7 @@
 ﻿using Application.DTO_s;
 using Application.Interfaces;
 using Application.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
@@ -20,7 +21,7 @@ public class UserController : BaseController
         var response = await _userService.CreateUserAsync(dto);
         return HandleRequest(response);
     }
-    
+    [Authorize]
     [HttpGet("GetAllUsers")]
     public async Task<ActionResult<BaseResponse<List<UserResponse>>>> GetAllUserAsync()
     {
@@ -28,13 +29,15 @@ public class UserController : BaseController
         return HandleRequest(response);
     }
     
+    [Authorize]
     [HttpGet("GetUserById")]
     public async Task<ActionResult<BaseResponse<UserResponse>>> GetUserByIdAsync([FromQuery] Guid userId)
     {
         var response = await _userService.GetUserByIdAsync(userId);
         return HandleRequest(response);
     }
-
+    
+    [Authorize]
     [HttpDelete]
     public async Task<ActionResult<BaseResponse<UserResponse>>> DeleteUserAsync(Guid userId)
     {

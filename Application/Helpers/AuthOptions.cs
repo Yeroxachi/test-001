@@ -2,7 +2,7 @@
 
 public static class AuthOptions
 {
-    public static string Key = "MySecretKey123";
+    public static string Key = "MySuperPuperUltraMaxLiteSecretKey123";
     public static string Issuer = "DefaultIssuer";
     public static string Audience = "DefaultAudience";
     public static int AccessTokenLifeTime = 60;

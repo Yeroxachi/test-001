@@ -24,7 +24,7 @@ public class UserService : BaseService, IUserService
         }
 
         var newUser = Mapper.Map<User>(dto);
-        newUser.PasswordHash = UserHelpers.Hash(newUser.PasswordHash);
+        newUser.PasswordHash = UserHelpers.Hash(dto.Password);
         await DbTestContext.Users.AddAsync(newUser, cancellationToken);
         await DbTestContext.SaveChangesAsync(cancellationToken);
         var response = Mapper.Map<UserResponse>(newUser);
