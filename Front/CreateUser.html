@@ -85,9 +85,8 @@
             .then(response => {
                 if (response.status === 201) {
                     return response.json();
-                } else {
-                    throw new Error('Ошибка при создании профиля');
                 }
+                throw new Error('Ошибка при создании профиля');
             })
             .then(data => {
                 console.log('Успешно');

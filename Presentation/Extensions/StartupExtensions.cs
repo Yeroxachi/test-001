@@ -3,6 +3,7 @@ using Application;
 using Application.Interfaces;
 using Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -15,6 +16,7 @@ public static class StartupExtensions
         serviceCollection.AddScoped<IUserService, UserService>();
         serviceCollection.AddScoped<IAuthService, AuthService>();
         serviceCollection.AddScoped<ITokenProvider, TokenProvider>();
+        serviceCollection.AddScoped<IGoogleAuthService, GoogleAuthService>();
         return serviceCollection;
     }
     
@@ -25,27 +27,42 @@ public static class StartupExtensions
         return serviceCollection;
     }
     
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddJwtAndGoogleAuthentication(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddAuthentication(x =>
-        {
-            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(o =>
-        {
-            var key = Encoding.UTF8.GetBytes(AuthOptions.Key);
-            o.SaveToken = true;
-            o.TokenValidationParameters = new TokenValidationParameters
+        serviceCollection.AddAuthentication(options =>
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = AuthOptions.Issuer,
-                ValidAudience = AuthOptions.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(key)
-            };
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer("JwtScheme", jwtOptions =>
+            {
+                var key = Encoding.UTF8.GetBytes(AuthOptions.Key);
+                jwtOptions.SaveToken = true;
+                jwtOptions.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = AuthOptions.Issuer,
+                    ValidAudience = AuthOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+            })
+            .AddGoogle("GoogleScheme", googleOptions =>
+            {
+                googleOptions.ClientId = "631581197553-e2l7ltmh336hjtob95uom02lufceu21j.apps.googleusercontent.com";
+                googleOptions.ClientSecret = "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";
+            });
+
+        serviceCollection.AddAuthorization(options =>
+        {
+            options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .AddAuthenticationSchemes("JwtScheme", "GoogleScheme")
+                .Build();
         });
+
         return serviceCollection;
     }
     

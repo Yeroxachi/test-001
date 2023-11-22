@@ -14,7 +14,7 @@ builder.Services.AddManagementServices();
 builder.Services.AddDbContext<TestContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSwaggerSecurity();
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAndGoogleAuthentication();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
